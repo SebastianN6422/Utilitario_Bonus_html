@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Productos</title>
+    <!-- Incluir Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Vinculamos el archivo CSS -->
+</head>
+
+<body>
+    <div class="container">
+        <h1>Visualizador de Productos</h1>
+
+        <textarea id="jsonInput" placeholder='Pega aquí tus datos JSON en el formato requerido...'></textarea>
+
+        <button onclick="procesarDatos()">Generar Tabla</button>
+
+        <div id="error" class="error"></div>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script src="script.js"></script> <!-- Vinculamos el archivo JS -->
+</body>
+
+</html>
