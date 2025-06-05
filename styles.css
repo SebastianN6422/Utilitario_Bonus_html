@@ -26,11 +26,12 @@ h1 {
     color: #1e50a2;
     text-align: center;
     margin-bottom: 20px;
+    size: 10px;
 }
 
 textarea {
-    width: 100%;
-    height: 150px;
+    width: 95%;
+    height: 130px;
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #1e50a2;
@@ -44,15 +45,17 @@ button {
     background-color: #ffd700;
     color: #1e50a2;
     border: none;
-    padding: 12px 30px;
+    padding: 10px 28px;
     font-size: 16px;
-    border-radius: 50px; /* Redondeado para un estilo moderno */
+    border-radius: 50px;
+    /* Redondeado para un estilo moderno */
     cursor: pointer;
     font-weight: bold;
     display: block;
     margin: 0 auto 20px;
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombra sutil */
     border: 2px solid transparent;
     outline: none;
 }
@@ -60,13 +63,16 @@ button {
 /* Efecto hover */
 button:hover {
     background-color: #e6c200;
-    transform: translateY(-3px); /* Efecto de elevación suave */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+    transform: translateY(-3px);
+    /* Efecto de elevación suave */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    /* Sombra más pronunciada */
 }
 
 /* Efecto cuando se hace clic (activo) */
 button:active {
-    transform: translateY(1px); /* Efecto de hundimiento */
+    transform: translateY(1px);
+    /* Efecto de hundimiento */
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -132,7 +138,8 @@ tr:hover {
         padding: 8px 15px;
     }
 
-    th, td {
+    th,
+    td {
         font-size: 14px;
         padding: 8px;
     }
@@ -152,7 +159,8 @@ tr:hover {
         padding: 6px 12px;
     }
 
-    th, td {
+    th,
+    td {
         font-size: 12px;
         padding: 6px;
     }
@@ -166,21 +174,24 @@ button.copy-btn {
     padding: 12px;
     border-radius: 50%;
     transition: background-color 0.3s ease, transform 0.3s ease;
-    width: 50px; /* Ajustamos el tamaño del botón */
+    width: 50px;
+    /* Ajustamos el tamaño del botón */
     height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombra suave */
 }
 
 /* Efecto hover */
 button.copy-btn:hover {
     background-color: #45a049;
     transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    /* Sombra más pronunciada */
 }
 
 /* Efecto cuando se hace clic (activo) */

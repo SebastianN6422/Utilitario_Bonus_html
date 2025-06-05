@@ -27,14 +27,14 @@ function procesarDatos() {
         }
 
         let html = `
-            <table>
+            <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
                 <thead>
-                    <tr>
-                        <th>SKU</th>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Puntos</th>
-                        <th>Precio</th>
+                    <tr style="background-color: #1e50a2; color: white;">
+                        <th style="border-bottom: 1px solid #ddd; padding: 6px; text-align: left; font-size: 12px;">SKU</th>
+                        <th style="border-bottom: 1px solid #ddd; padding: 6px; text-align: left; font-size: 12px;">Producto</th>
+                        <th style="border-bottom: 1px solid #ddd; padding: 6px; text-align: left; font-size: 12px;">Cantidad</th>
+                        <th style="border-bottom: 1px solid #ddd; padding: 6px; text-align: left; font-size: 12px;">Puntos</th>
+                        <th style="border-bottom: 1px solid #ddd; padding: 6px; text-align: left; font-size: 12px;">Precio</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,14 +52,15 @@ function procesarDatos() {
                         inventario.precios.forEach(precioInfo => {
                             const precio = parseFloat(precioInfo.precio) || 0;
                             const puntos = precioInfo.punto || 0;
+                            const esFilaPar = data.indexOf(producto) % 2 === 0;
 
                             html += `
-                                <tr>
-                                    <td>${sku}</td>
-                                    <td>${nombre}</td>
-                                    <td>${cantidad}</td>
-                                    <td>${puntos}</td>
-                                    <td class="precio">S/. ${precio.toFixed(2)}</td>
+                                <tr style="background-color: ${esFilaPar ? '#f9f9f9' : 'white'};">
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; text-align: left;">${sku}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; text-align: left; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${nombre}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; text-align: left;">${cantidad}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; text-align: left;">${puntos}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; text-align: left; color: #1e50a2; font-weight: bold;">S/. ${precio.toFixed(2)}</td>
                                 </tr>
                             `;
                         });
@@ -76,17 +77,14 @@ function procesarDatos() {
         resultadoDiv.innerHTML = html;
 
         if (data.length > 0) {
-            // Crear el botón de copiar con el icono
             const copyButton = document.createElement('button');
             copyButton.classList.add('copy-btn');
 
-            // Crear el icono dentro del botón
             const icon = document.createElement('i');
-            icon.classList.add('fas', 'fa-copy'); // Aquí usamos el icono de copiar
+            icon.classList.add('fas', 'fa-copy');
 
             copyButton.appendChild(icon);
 
-            // Evento para copiar la tabla al portapapeles
             copyButton.onclick = function () {
                 copiarTablaAlPortapapeles('resultado');
             };
@@ -99,30 +97,23 @@ function procesarDatos() {
         console.error(e);
     }
 }
-
 function copiarTablaAlPortapapeles(elementId) {
     const tabla = document.getElementById(elementId).querySelector('table');
     if (!tabla) return;
 
-    let datosTabla = '';
-    const encabezados = [];
-    tabla.querySelectorAll('thead th').forEach(th => {
-        encabezados.push(th.textContent.trim());
-    });
-    datosTabla += encabezados.join(' | ') + '\n';
-
-    tabla.querySelectorAll('tbody tr').forEach(fila => {
-        const datosFila = [];
-        fila.querySelectorAll('td').forEach(celda => {
-            datosFila.push(celda.textContent.trim());
-        });
-        datosTabla += datosFila.join(' | ') + '\n';
-    });
+    const tablaHTML = tabla.outerHTML;
 
     try {
-        navigator.clipboard.writeText(datosTabla.trim()).then(() => alert('¡Datos de la tabla copiados al portapapeles!'));
+        navigator.clipboard.write([
+            new ClipboardItem({
+                'text/html': new Blob([tablaHTML], { type: 'text/html' }),
+                'text/plain': new Blob([tablaHTML], { type: 'text/plain' })
+            })
+        ]).then(() => {
+            alert('¡Tabla copiada al portapapeles! Pégala en Gmail para verla con formato.');
+        });
     } catch (err) {
-        alert('Error al copiar los datos de la tabla: ' + err);
+        alert('Error al copiar la tabla: ' + err);
     }
 }
 
@@ -131,3 +122,5 @@ function mostrarError(mensaje) {
     errorDiv.textContent = mensaje;
     errorDiv.style.display = 'block';
 }
+
+
