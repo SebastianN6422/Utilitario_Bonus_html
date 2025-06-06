@@ -91,6 +91,7 @@ function procesarDatos() {
 
             resultadoDiv.appendChild(copyButton);
         }
+        document.getElementById('jsonInput').value = '';
 
     } catch (e) {
         mostrarError('Error al procesar los datos: ' + e.message);
