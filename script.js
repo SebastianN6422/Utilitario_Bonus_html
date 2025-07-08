@@ -2,6 +2,8 @@ function procesarDatos() {
     const jsonInput = document.getElementById('jsonInput').value.trim();
     const resultadoDiv = document.getElementById('resultado');
     const errorDiv = document.getElementById('error');
+    let totalPuntos = 0;
+    let totalSoles = 0;
 
     resultadoDiv.innerHTML = '';
     errorDiv.style.display = 'none';
@@ -51,18 +53,22 @@ function procesarDatos() {
                     if (inventario.precios && Array.isArray(inventario.precios)) {
                         inventario.precios.forEach(precioInfo => {
                             const precio = parseFloat(precioInfo.precio) || 0;
-                            const puntos = precioInfo.punto || 0;
+                            const puntos = parseFloat(precioInfo.punto) || 0;
+
+                            totalPuntos += puntos;
+                            totalSoles += precio;
+
                             const esFilaPar = data.indexOf(producto) % 2 === 0;
 
                             html += `
-                                <tr style="background-color: ${esFilaPar ? '#f9f9f9' : 'white'};">
-                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; text-align: left;">${sku}</td>
-                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; text-align: left; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${nombre}</td>
-                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; text-align: left;">${cantidad}</td>
-                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; text-align: left;">${puntos}</td>
-                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; text-align: left; color: #1e50a2; font-weight: bold;">S/. ${precio.toFixed(2)}</td>
-                                </tr>
-                            `;
+                        <tr style="background-color: ${esFilaPar ? '#f9f9f9' : 'white'};">
+                            <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${sku}</td>
+                            <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${nombre}</td>
+                            <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${cantidad}</td>
+                            <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${puntos}</td>
+                            <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; color: #1e50a2; font-weight: bold;">S/. ${precio.toFixed(2)}</td>
+                        </tr>
+                    `;
                         });
                     }
                 });
@@ -70,9 +76,14 @@ function procesarDatos() {
         });
 
         html += `
-                </tbody>
-            </table>
-        `;
+    <tr style="background-color: #eaf2ff; font-weight: bold;">
+        <td colspan="3" style="padding: 6px; text-align: right;">Total:</td>
+        <td style="padding: 6px;">${totalPuntos}</td>
+        <td style="padding: 6px;">S/. ${totalSoles.toFixed(2)}</td>
+    </tr>
+`;
+
+        html += `</tbody></table>`;
 
         resultadoDiv.innerHTML = html;
 
