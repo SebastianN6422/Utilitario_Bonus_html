@@ -32,19 +32,21 @@ function procesarDatos() {
             <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
                 <thead>
                     <tr style="background-color: #1e50a2; color: white;">
-                        <th style="border-bottom: 1px solid #ddd; padding: 6px; text-align: left; font-size: 12px;">SKU</th>
-                        <th style="border-bottom: 1px solid #ddd; padding: 6px; text-align: left; font-size: 12px;">Producto</th>
-                        <th style="border-bottom: 1px solid #ddd; padding: 6px; text-align: left; font-size: 12px;">Cantidad</th>
-                        <th style="border-bottom: 1px solid #ddd; padding: 6px; text-align: left; font-size: 12px;">Puntos</th>
-                        <th style="border-bottom: 1px solid #ddd; padding: 6px; text-align: left; font-size: 12px;">Precio</th>
+                        <th style="padding: 6px; font-size: 12px;">SKU</th>
+                        <th style="padding: 6px; font-size: 12px;">Producto</th>
+                        <th style="padding: 6px; font-size: 12px;">Cantidad</th>
+                        <th style="padding: 6px; font-size: 12px;">Puntos<br>(unit)</th>
+                        <th style="padding: 6px; font-size: 12px;">Total<br>Puntos</th>
+                        <th style="padding: 6px; font-size: 12px;">Precio<br>(unit)</th>
+                        <th style="padding: 6px; font-size: 12px;">Subtotal<br>Precio</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
 
-        data.forEach(producto => {
+        data.forEach((producto, productoIndex) => {
             const nombre = producto.nombre || 'Sin nombre';
-            const cantidad = producto.cantidad || '0';
+            const cantidad = parseFloat(producto.cantidad) || 0;
 
             if (producto.inventario && Array.isArray(producto.inventario)) {
                 producto.inventario.forEach(inventario => {
@@ -52,23 +54,28 @@ function procesarDatos() {
 
                     if (inventario.precios && Array.isArray(inventario.precios)) {
                         inventario.precios.forEach(precioInfo => {
-                            const precio = parseFloat(precioInfo.precio) || 0;
-                            const puntos = parseFloat(precioInfo.punto) || 0;
+                            const precioUnit = parseFloat(precioInfo.precio) || 0;
+                            const puntosUnit = parseFloat(precioInfo.punto) || 0;
 
-                            totalPuntos += puntos;
-                            totalSoles += precio;
+                            const subtotalPuntos = puntosUnit * cantidad;
+                            const subtotalPrecio = precioUnit * cantidad;
 
-                            const esFilaPar = data.indexOf(producto) % 2 === 0;
+                            totalPuntos += subtotalPuntos;
+                            totalSoles += subtotalPrecio;
+
+                            const esFilaPar = productoIndex % 2 === 0;
 
                             html += `
-                        <tr style="background-color: ${esFilaPar ? '#f9f9f9' : 'white'};">
-                            <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${sku}</td>
-                            <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${nombre}</td>
-                            <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${cantidad}</td>
-                            <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${puntos}</td>
-                            <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; color: #1e50a2; font-weight: bold;">S/. ${precio.toFixed(2)}</td>
-                        </tr>
-                    `;
+                                <tr style="background-color: ${esFilaPar ? '#f9f9f9' : 'white'};">
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${sku}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${nombre}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${cantidad}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${puntosUnit}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${subtotalPuntos}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">S/. ${precioUnit.toFixed(2)}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px; color: #1e50a2; font-weight: bold;">S/. ${subtotalPrecio.toFixed(2)}</td>
+                                </tr>
+                            `;
                         });
                     }
                 });
@@ -76,14 +83,14 @@ function procesarDatos() {
         });
 
         html += `
-    <tr style="background-color: #eaf2ff; font-weight: bold;">
-        <td colspan="3" style="padding: 6px; text-align: right;">Total:</td>
-        <td style="padding: 6px;">${totalPuntos}</td>
-        <td style="padding: 6px;">S/. ${totalSoles.toFixed(2)}</td>
-    </tr>
-`;
-
-        html += `</tbody></table>`;
+            <tr style="background-color: #eaf2ff; font-weight: bold;">
+                <td colspan="4" style="padding: 6px; text-align: right;">Totales:</td>
+                <td style="padding: 6px;">${totalPuntos}</td>
+                <td></td>
+                <td style="padding: 6px;">S/. ${totalSoles.toFixed(2)}</td>
+            </tr>
+        </tbody></table>
+        `;
 
         resultadoDiv.innerHTML = html;
 
@@ -102,6 +109,7 @@ function procesarDatos() {
 
             resultadoDiv.appendChild(copyButton);
         }
+
         document.getElementById('jsonInput').value = '';
 
     } catch (e) {
@@ -109,6 +117,7 @@ function procesarDatos() {
         console.error(e);
     }
 }
+
 function copiarTablaAlPortapapeles(elementId) {
     const tabla = document.getElementById(elementId).querySelector('table');
     if (!tabla) return;
@@ -134,5 +143,3 @@ function mostrarError(mensaje) {
     errorDiv.textContent = mensaje;
     errorDiv.style.display = 'block';
 }
-
-
