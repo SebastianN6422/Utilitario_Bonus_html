@@ -34,6 +34,7 @@ function procesarDatos() {
                     <tr style="background-color: #1e50a2; color: white;">
                         <th style="padding: 6px; font-size: 12px;">SKU</th>
                         <th style="padding: 6px; font-size: 12px;">Producto</th>
+                        <th style="padding: 6px; font-size: 12px;">Tipo</th>
                         <th style="padding: 6px; font-size: 12px;">Cantidad</th>
                         <th style="padding: 6px; font-size: 12px;">Puntos<br>(unit)</th>
                         <th style="padding: 6px; font-size: 12px;">Total<br>Puntos</th>
@@ -46,6 +47,9 @@ function procesarDatos() {
 
         data.forEach((producto, productoIndex) => {
             const nombre = producto.nombre || 'Sin nombre';
+            const tipo = producto.fisico_virtual
+                ? producto.fisico_virtual.charAt(0).toUpperCase() + producto.fisico_virtual.slice(1).toLowerCase()
+                : 'Desconocido';
             const cantidad = parseFloat(producto.cantidad) || 0;
 
             if (producto.inventario && Array.isArray(producto.inventario)) {
@@ -69,6 +73,7 @@ function procesarDatos() {
                                 <tr style="background-color: ${esFilaPar ? '#f9f9f9' : 'white'};">
                                     <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${sku}</td>
                                     <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${nombre}</td>
+                                    <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${tipo}</td>
                                     <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${cantidad}</td>
                                     <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${puntosUnit}</td>
                                     <td style="border-bottom: 1px solid #ddd; padding: 4px; font-size: 12px;">${subtotalPuntos}</td>
@@ -84,7 +89,7 @@ function procesarDatos() {
 
         html += `
             <tr style="background-color: #eaf2ff; font-weight: bold;">
-                <td colspan="4" style="padding: 6px; text-align: right;">Totales:</td>
+                <td colspan="5" style="padding: 6px; text-align: right;">Totales:</td>
                 <td style="padding: 6px;">${totalPuntos}</td>
                 <td></td>
                 <td style="padding: 6px;">S/. ${totalSoles.toFixed(2)}</td>
@@ -100,7 +105,6 @@ function procesarDatos() {
 
             const icon = document.createElement('i');
             icon.classList.add('fas', 'fa-copy');
-
             copyButton.appendChild(icon);
 
             copyButton.onclick = function () {
@@ -117,6 +121,33 @@ function procesarDatos() {
         console.error(e);
     }
 }
+
+function copiarTablaAlPortapapeles(elementId) {
+    const tabla = document.getElementById(elementId).querySelector('table');
+    if (!tabla) return;
+
+    const tablaHTML = tabla.outerHTML;
+
+    try {
+        navigator.clipboard.write([
+            new ClipboardItem({
+                'text/html': new Blob([tablaHTML], { type: 'text/html' }),
+                'text/plain': new Blob([tablaHTML], { type: 'text/plain' })
+            })
+        ]).then(() => {
+            alert('¡Tabla copiada al portapapeles! Pégala en Gmail para verla con formato.');
+        });
+    } catch (err) {
+        alert('Error al copiar la tabla: ' + err);
+    }
+}
+
+function mostrarError(mensaje) {
+    const errorDiv = document.getElementById('error');
+    errorDiv.textContent = mensaje;
+    errorDiv.style.display = 'block';
+}
+
 
 function copiarTablaAlPortapapeles(elementId) {
     const tabla = document.getElementById(elementId).querySelector('table');
